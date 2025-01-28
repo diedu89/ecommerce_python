@@ -1,6 +1,7 @@
 import strawberry
 from ..types.user import UserType, UserCreateInput, UserUpdateInput
 from app.services.user_service import UserService
+from ..permissions import IsAdmin
 
 
 @strawberry.type
@@ -13,7 +14,7 @@ class UserMutations:
         user = user_service.create_user(user_data.to_pydantic())
         return UserType.from_pydantic(user)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAdmin])
     def update_user(
         self, info: strawberry.Info, user_id: int, user_data: UserUpdateInput
     ) -> UserType:
