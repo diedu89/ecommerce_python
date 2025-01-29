@@ -1,6 +1,4 @@
 import strawberry
-from datetime import datetime
-from typing import Optional
 from app.schemas.user import (
     User as UserSchema,
     UserCreate as UserCreateSchema,
