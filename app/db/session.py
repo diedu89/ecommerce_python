@@ -5,6 +5,7 @@ from app.core.config import settings
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
+    echo=settings.ENVIRONMENT == "development",
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
