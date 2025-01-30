@@ -1,10 +1,14 @@
 import aiohttp
 import asyncio
+from app.core.security import get_password_hash
+from app.models.user import User
 from app.db.session import SessionLocal
 from app.services.product_service import ProductService
-from app.services.user_service import UserService
 from app.schemas.product import ProductCreate
-from app.schemas.user import UserCreate
+from passlib.context import CryptContext
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def fetch_and_seed_products():
@@ -13,11 +17,11 @@ async def fetch_and_seed_products():
 
     try:
         # Check if products exist
-        products = product_service.get_all_products()
-        if len(products) > 0:
+        paginated_products = product_service.get_all_products()
+        if paginated_products.total > 0:
             print("Products already exist in database, skipping seed")
             return
-
+        products = []
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 "https://dummyjson.com/products?limit=200"
@@ -45,22 +49,28 @@ async def fetch_and_seed_products():
 
 async def create_admin_user():
     db = SessionLocal()
-    user_service = UserService(db)
 
     try:
-        if not user_service.get_user_by_email("admin@example.com"):
-            admin_data = UserCreate(
+        # Check if admin exists directly using the User model
+        admin = db.query(User).filter(User.email == "admin@example.com").first()
+
+        if not admin:
+            # Create admin user directly
+            admin = User(
                 username="admin",
                 email="admin@example.com",
-                password="test123",
+                hashed_password=get_password_hash("test123"),
+                is_active=True,
                 is_superuser=True,
             )
-            user_service.create_user(admin_data)
+            db.add(admin)
+            db.commit()
             print("Admin user created successfully")
         else:
             print("Admin user already exists")
     except Exception as e:
         print(f"Error creating admin user: {e}")
+        db.rollback()
     finally:
         db.close()
 
