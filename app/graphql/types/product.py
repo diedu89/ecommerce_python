@@ -1,4 +1,5 @@
 import strawberry
+from .pagination import PaginatedResponse
 from app.schemas.product import (
     Product as ProductSchema,
     ProductCreate as ProductCreateSchema,
@@ -18,4 +19,9 @@ class ProductCreateInput:
 
 @strawberry.experimental.pydantic.input(model=ProductUpdateSchema, all_fields=True)
 class ProductUpdateInput:
+    pass
+
+
+@strawberry.type
+class ProductPagination(PaginatedResponse[ProductType]):
     pass

@@ -1,4 +1,5 @@
 import strawberry
+from .pagination import PaginatedResponse
 from app.schemas.user import (
     User as UserSchema,
     UserCreate as UserCreateSchema,
@@ -18,4 +19,9 @@ class UserCreateInput:
 
 @strawberry.experimental.pydantic.input(model=UserUpdateSchema, all_fields=True)
 class UserUpdateInput:
+    pass
+
+
+@strawberry.type
+class UserPagination(PaginatedResponse[UserType]):
     pass
