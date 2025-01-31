@@ -1,10 +1,14 @@
 import math
-from sqlalchemy.orm import Session
 from typing import Optional
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate, User as UserSchema
-from app.schemas.pagination import PaginationParams, PaginatedResponse
+
+from sqlalchemy.orm import Session
+from sqlalchemy.sql.expression import true
+
 from app.core.security import get_password_hash
+from app.models.user import User
+from app.schemas.pagination import PaginatedResponse, PaginationParams
+from app.schemas.user import User as UserSchema
+from app.schemas.user import UserCreate
 
 
 class UserService:
@@ -12,18 +16,18 @@ class UserService:
         self.db = db
 
     def get_all_users(
-        self, pagination: Optional[PaginationParams] = PaginationParams(page=1, size=10)
+        self,
+        pagination: Optional[PaginationParams] = PaginationParams(
+            page=1, size=10
+        ),
     ) -> PaginatedResponse[UserSchema]:
 
-        query = self.db.query(User).filter(User.is_active == True)
+        query = self.db.query(User).filter(User.is_active == true())
 
-        # Get total count
         total = query.count()
 
-        # Calculate total pages
         total_pages = math.ceil(total / pagination.size)
 
-        # Apply pagination
         users = (
             query.offset((pagination.page - 1) * pagination.size)
             .limit(pagination.size)

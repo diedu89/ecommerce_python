@@ -8,9 +8,8 @@ Create Date: 2025-01-23 14:10:34.085614
 
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "53a2fe9a2646"
@@ -37,7 +36,9 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
-    op.create_index(op.f("ix_users_username"), "users", ["username"], unique=True)
+    op.create_index(
+        op.f("ix_users_username"), "users", ["username"], unique=True
+    )
     # ### end Alembic commands ###
 
 

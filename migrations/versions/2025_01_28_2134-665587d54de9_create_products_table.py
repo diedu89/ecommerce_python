@@ -8,9 +8,8 @@ Create Date: 2025-01-28 21:34:27.442709
 
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "665587d54de9"
@@ -35,7 +34,9 @@ def upgrade() -> None:
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_products_title"), "products", ["title"], unique=False)
+    op.create_index(
+        op.f("ix_products_title"), "products", ["title"], unique=False
+    )
     # ### end Alembic commands ###
 
 

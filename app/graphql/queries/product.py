@@ -1,9 +1,12 @@
-import strawberry
 from typing import Optional
-from app.services.product_service import ProductService
+
+import strawberry
+
 from app.schemas.product import Product as ProductSchema
-from ..types.product import ProductType, ProductPagination
+from app.services.product_service import ProductService
+
 from ..types.pagination import PaginationInput
+from ..types.product import ProductPagination, ProductType
 
 
 @strawberry.type
@@ -15,11 +18,15 @@ class ProductQueries:
         pagination: PaginationInput = {"page": 1, "size": 10},
     ) -> ProductPagination:
         product_service = ProductService(info.context.db)
-        paginated_products = product_service.get_all_products(pagination.to_pydantic())
+        paginated_products = product_service.get_all_products(
+            pagination.to_pydantic()
+        )
 
         return ProductPagination(
             items=[
-                ProductType.from_pydantic(ProductSchema.model_validate(product))
+                ProductType.from_pydantic(
+                    ProductSchema.model_validate(product)
+                )
                 for product in paginated_products.items
             ],
             total=paginated_products.total,
@@ -29,7 +36,9 @@ class ProductQueries:
         )
 
     @strawberry.field
-    def product(self, info: strawberry.Info, product_id: int) -> Optional[ProductType]:
+    def product(
+        self, info: strawberry.Info, product_id: int
+    ) -> Optional[ProductType]:
         product_service = ProductService(info.context.db)
         product = product_service.get_product_by_id(product_id)
         return (

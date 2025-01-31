@@ -1,7 +1,9 @@
 import strawberry
-from ..types.user import UserType, UserCreateInput, UserUpdateInput
+
 from app.services.user_service import UserService
+
 from ..permissions import IsAdmin
+from ..types.user import UserCreateInput, UserType, UserUpdateInput
 
 
 @strawberry.type

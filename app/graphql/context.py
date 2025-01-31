@@ -1,11 +1,11 @@
 import strawberry
-from typing import Any
-from sqlalchemy.orm import Session
 from fastapi import Depends
+from sqlalchemy.orm import Session
 from strawberry.fastapi import BaseContext
-from app.models.user import User
-from app.db.session import get_db
+
 from app.api.v1.auth import get_current_user_optional
+from app.db.session import get_db
+from app.models.user import User
 
 
 class GraphQLContext(BaseContext):

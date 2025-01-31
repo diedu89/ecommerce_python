@@ -1,12 +1,13 @@
-import aiohttp
 import asyncio
-from app.core.security import get_password_hash
-from app.models.user import User
-from app.db.session import SessionLocal
-from app.services.product_service import ProductService
-from app.schemas.product import ProductCreate
+
+import aiohttp
 from passlib.context import CryptContext
 
+from app.core.security import get_password_hash
+from app.db.session import SessionLocal
+from app.models.user import User
+from app.schemas.product import ProductCreate
+from app.services.product_service import ProductService
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -52,7 +53,9 @@ async def create_admin_user():
 
     try:
         # Check if admin exists directly using the User model
-        admin = db.query(User).filter(User.email == "admin@example.com").first()
+        admin = (
+            db.query(User).filter(User.email == "admin@example.com").first()
+        )
 
         if not admin:
             # Create admin user directly

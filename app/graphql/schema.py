@@ -1,8 +1,9 @@
 import strawberry
-from .queries.user import UserQueries
-from .queries.product import ProductQueries
-from .mutations.user import UserMutations
+
 from .mutations.product import ProductMutations
+from .mutations.user import UserMutations
+from .queries.product import ProductQueries
+from .queries.user import UserQueries
 
 
 @strawberry.type

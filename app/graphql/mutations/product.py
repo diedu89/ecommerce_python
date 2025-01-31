@@ -1,9 +1,12 @@
-import strawberry
 from typing import Optional
-from app.services.product_service import ProductService
+
+import strawberry
+
 from app.schemas.product import Product as ProductSchema
-from ..types.product import ProductType, ProductCreateInput, ProductUpdateInput
+from app.services.product_service import ProductService
+
 from ..permissions import IsAdmin
+from ..types.product import ProductCreateInput, ProductType, ProductUpdateInput
 
 
 @strawberry.type
@@ -18,10 +21,15 @@ class ProductMutations:
 
     @strawberry.mutation(permission_classes=[IsAdmin])
     def update_product(
-        self, info: strawberry.Info, product_id: int, product_data: ProductUpdateInput
+        self,
+        info: strawberry.Info,
+        product_id: int,
+        product_data: ProductUpdateInput,
     ) -> Optional[ProductType]:
         product_service = ProductService(info.context.db)
-        product = product_service.update_product(product_id, product_data.to_pydantic())
+        product = product_service.update_product(
+            product_id, product_data.to_pydantic()
+        )
         return (
             ProductType.from_pydantic(ProductSchema.model_validate(product))
             if product

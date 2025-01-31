@@ -1,17 +1,22 @@
+from typing import Optional
+
 import strawberry
-from typing import List, Optional
-from app.services.user_service import UserService
+
 from app.schemas.user import User as UserSchema
-from ..types.user import UserType, UserPagination
-from ..permissions import IsAuthenticated, IsAdmin
+from app.services.user_service import UserService
+
+from ..permissions import IsAdmin, IsAuthenticated
 from ..types.pagination import PaginationInput
+from ..types.user import UserPagination, UserType
 
 
 @strawberry.type
 class UserQueries:
     @strawberry.field(permission_classes=[IsAuthenticated])
     def me(self, info: strawberry.Info) -> UserType:
-        return UserType.from_pydantic(UserSchema.model_validate(info.context.user))
+        return UserType.from_pydantic(
+            UserSchema.model_validate(info.context.user)
+        )
 
     @strawberry.field(permission_classes=[IsAdmin])
     def users(
@@ -37,4 +42,8 @@ class UserQueries:
     def user(self, info: strawberry.Info, user_id: int) -> Optional[UserType]:
         user_service = UserService(info.context.db)
         user = user_service.get_user_by_id(user_id)
-        return UserType.from_pydantic(UserSchema.model_validate(user)) if user else None
+        return (
+            UserType.from_pydantic(UserSchema.model_validate(user))
+            if user
+            else None
+        )
